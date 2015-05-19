@@ -1,0 +1,32 @@
+{
+  "license": "BSD-3-Clause",
+  "name": "PBGame-luckytile",
+  "version": "0.0.1-beta.0",
+  "description": "Flipping your lucky tile",
+  "keyboards": [
+    "PBGame",
+    "Lucky tile",
+    "Fliping tile"
+  ],
+  "homepage": "http://poeboxes.com/games/luckytile",
+  "bugs": {
+    "url": "https://github.com/poenguyen3/PBGame-luckytile",
+    "email": "poenguyen.3@gmail.com"
+  },
+  "author": {
+    "name": "Poe Nguyen",
+    "email": "poenguyen.3@gmail.com",
+    "url": "poeboxes.com"
+  },
+  "main": "PBGame-luckytile",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "respository": {
+    "type": "git",
+    "url": "https://github.com/poenguyen3/PBGame-luckytile"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.11"
+  }
+}
