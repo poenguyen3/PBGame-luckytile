@@ -10,10 +10,11 @@ var gulp = require('gulp'),
     gulpif = require('gulp-if')
     browserify = require('gulp-browserify'),
     concat = require('gulp-concat'),
-    clean = require('gulp-clean');
+    clean = require('gulp-clean'),
+    nodemon = require('gulp-nodemon');
 
 var env = process.env.NODE_ENV || 'development';
-    devBuildDir = 'builds/dev'
+    devBuildDir = 'app/builds/dev'
     srcFiles = {
       clientJS: ['src/js/*.js', 'src/js/**/*.js'],
       views: ['src/views/**/*.jade'],
@@ -52,6 +53,12 @@ gulp.task('clean-dev', function(){
           .pipe(clean());
 })
 
+gulp.task('run-server', function(){
+  nodemon({
+    script: 'app/app.js'
+  }, ['jade', 'css', 'clientJS']);
+})
+
 
 gulp.task('dev-build', ['jade', 'css', 'clientJS']);
-gulp.task('default', ['dev-build']);
+gulp.task('default', ['dev-build', 'run-server']);
