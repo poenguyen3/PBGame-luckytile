@@ -16,7 +16,9 @@ var gulp = require('gulp'),
 var env = process.env.NODE_ENV || 'development';
     devBuildDir = 'app/builds/dev'
     srcFiles = {
-      clientJS: ['src/js/*.js', 'src/js/**/*.js'],
+      assetJS: ['src/js/*.js', 'src/js/**/*.js'],
+      siteJS: ['src/js/*.js'],
+      libsJS: ['src/js/libs/*.js'],
       views: ['src/views/**/*.jade'],
       lessFiles: ['src/less/*.less']
     }
@@ -27,8 +29,8 @@ gulp.task('jade', function(){
           .pipe(gulp.dest(devBuildDir));
 });
 
-gulp.task('clientJS', function(){
-  return gulp.src(srcFiles.clientJS)
+gulp.task('siteJS', function(){
+  return gulp.src(srcFiles.siteJS)
           .pipe(jshint())
           .pipe(jshint.reporter(jshintStylish))
           .pipe(browserify())
@@ -36,6 +38,15 @@ gulp.task('clientJS', function(){
           .pipe(uglify())
           .pipe(gulp.dest(devBuildDir + '/js'));
 });
+
+gulp.task('libsJS', function(){
+  return gulp.src(srcFiles.libsJS)
+          .pipe(concat('lib.js'))
+          .pipe(uglify())
+          .pipe(gulp.dest(devBuildDir + '/js'));
+});
+
+gulp.task('clientJS', ['libsJS', 'siteJS']);
 
 gulp.task('css', function(){
   return gulp.src(srcFiles.lessFiles)
@@ -59,6 +70,10 @@ gulp.task('run-server', function(){
   }, ['jade', 'css', 'clientJS']);
 })
 
+gulp.task('watch', function(){
+  gulp.watch(srcFiles.assetJS, ['clientJS']);
+})
 
-gulp.task('dev-build', ['jade', 'css', 'clientJS']);
+
+gulp.task('dev-build', ['jade', 'css', 'clientJS', 'watch']);
 gulp.task('default', ['dev-build', 'run-server']);
