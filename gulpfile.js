@@ -19,11 +19,23 @@ var env = process.env.NODE_ENV || 'development';
       assetJS: ['src/js/*.js', 'src/js/**/*.js'],
       siteJS: ['src/js/*.js'],
       libsJS: ['src/js/libs/*.js'],
-      views: ['src/views/**/*.jade'],
-      lessFiles: ['src/less/*.less']
+      nodeServer: ['app/app.js'],
+      views: ['src/views/**/*.jade', 'src/views/*.jade'],
+      lessFiles: ['src/less/*.less'],
+      cssLibs: ['src/css/*.css'],
+      fontFiles: [
+        'src/fonts/**/*.woff',
+        'src/fonts/**/*.ttf',
+        'src/fonts/**/*.woff2',
+        'src/fonts/**/*.eot',
+        'src/fonts/*.woff',
+        'src/fonts/*.ttf',
+        'src/fonts/*.eot',
+        'src/fonts/*.woff2'
+      ]
     }
 
-gulp.task('jade', function(){
+gulp.task('jadeView', function(){
   return gulp.src(srcFiles.views)
           .pipe(jade())
           .pipe(gulp.dest(devBuildDir));
@@ -33,7 +45,7 @@ gulp.task('siteJS', function(){
   return gulp.src(srcFiles.siteJS)
           .pipe(jshint())
           .pipe(jshint.reporter(jshintStylish))
-          .pipe(browserify())
+          // .pipe(browserify())
           .pipe(concat('app.js'))
           .pipe(uglify())
           .pipe(gulp.dest(devBuildDir + '/js'));
@@ -42,13 +54,14 @@ gulp.task('siteJS', function(){
 gulp.task('libsJS', function(){
   return gulp.src(srcFiles.libsJS)
           .pipe(concat('lib.js'))
+          // .pipe(browserify())
           .pipe(uglify())
           .pipe(gulp.dest(devBuildDir + '/js'));
 });
 
 gulp.task('clientJS', ['libsJS', 'siteJS']);
 
-gulp.task('css', function(){
+gulp.task('less', function(){
   return gulp.src(srcFiles.lessFiles)
           .pipe(less())
           .pipe(concat('style.css'))
@@ -58,6 +71,21 @@ gulp.task('css', function(){
           .pipe(gulpif(env === 'production', uglifyCss()))
           .pipe(gulp.dest(devBuildDir + '/css'));
 });
+
+gulp.task('cssLib', function(){
+  return gulp.src(srcFiles.cssLibs)
+          .pipe(concat('libs.css'))
+          .pipe(gulp.dest(devBuildDir + '/css'));
+});
+
+gulp.task('css', ['less', 'cssLib']);
+
+gulp.task('font', function(){
+  return gulp.src(srcFiles.fontFiles)
+          .pipe(gulp.dest(devBuildDir + '/font'));
+})
+
+gulp.task('asset', ['font']);
 
 gulp.task('clean-dev', function(){
   return gulp.src(devBuildDir, {read: false})
@@ -72,8 +100,11 @@ gulp.task('run-server', function(){
 
 gulp.task('watch', function(){
   gulp.watch(srcFiles.assetJS, ['clientJS']);
-})
+  gulp.watch(srcFiles.lessFiles, ['less']);
+  gulp.watch(srcFiles.views, ['jadeView']);
+});
 
 
-gulp.task('dev-build', ['jade', 'css', 'clientJS', 'watch']);
+
+gulp.task('dev-build', ['clean-dev', 'jadeView', 'css', 'clientJS', 'asset', 'watch']);
 gulp.task('default', ['dev-build', 'run-server']);
