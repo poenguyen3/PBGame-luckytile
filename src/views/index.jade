@@ -1,8 +1,8 @@
-doctype html
-html
-  head
-    title Hello GULP
-  body
-    h1 Good morning! GULP HERE!
+extends layouts/main-layout.jade
 
-  include blocks/scripts.jade
+block container
+- var tiles = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+  each val in tiles
+    .tile.col-4.valign-wrapper.blue.lighten-2(href="#")
+      .overlay.waves-effect.waves-light
+      h6.cont.center-align= val
