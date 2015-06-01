@@ -10,4 +10,3 @@
     Waves.displayEffect();
   });
 }(jQuery, window));
-$('body').attr("data-d","dlfkj");
